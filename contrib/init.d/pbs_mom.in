@@ -2,9 +2,25 @@
 #
 # pbs_mom	This script will start and stop the PBS Mom
 #
-# chkconfig: 345 95 5
+# chkconfig: 345 85 85
 # description: TORQUE/PBS is a versatile batch system for SMPs and clusters
 #
+# processname: pbs_mom
+#
+### BEGIN INIT INFO
+# Provides: pbs_mom
+# Required-Start: $network
+# Required-Stop: $network
+# Default-Start: 3 4 5
+# Short-Description: The Torque node manager MOM
+# Description: The Tera-scale Open-source Resource and QUEue manager
+#              provides control over batch jobs and distributed
+#              computing resources. It is an advanced open-source
+#              product based on the original PBS project and
+#              incorporates the best of both community and
+#              professional development.
+### END INIT INFO
+
 ulimit -n 32768
 # Source the library functions
 . /etc/rc.d/init.d/functions

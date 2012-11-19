@@ -2,9 +2,24 @@
 #
 # trqauthd	This script will start and stop the Torque Authorization Daemon
 #
-# chkconfig: 345 95 5
-# description: PBS is a batch versatile batch system for SMPs and clusters
+# chkconfig: 345 85 85
+# description: TORQUE/PBS is a batch versatile batch system for SMPs and clusters
 #
+# processname: trqauthd
+#
+### BEGIN INIT INFO
+# Provides: trqauthd
+# Required-Start: $network
+# Required-Stop: $network
+# Default-Start: 3 4 5
+# Short-Description: The Torque client authorization daemon
+# Description: The Tera-scale Open-source Resource and QUEue manager
+#              provides control over batch jobs and distributed
+#              computing resources. It is an advanced open-source
+#              product based on the original PBS project and
+#              incorporates the best of both community and
+#              professional development.
+### END INIT INFO
 # Source the library functions
 . /etc/rc.d/init.d/functions
 
