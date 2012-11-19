@@ -1,3 +1,6 @@
+%define git_repo torque
+%define git_head HEAD
+
 %define         major              2
 %define         libname            %mklibname %{name} %{major}
 %define         devname            %mklibname -d %{name}
@@ -17,12 +20,12 @@
 Name:           torque
 Summary:        The Torque resource and queue manager
 Group:          System/Cluster
-Version:        4.1.3
-Release:        %mkrel 1
+Version:        %git_get_ver
+Release:        %mkrel %git_get_rel2
 License:        TORQUEv1.1
 URL:            http://www.clusterresources.com/products/torque-resource-manager.php
 
-Source0:        %{name}-%{version}.tar.gz
+Source0:        %git_bs_source %{name}-%{version}.tar.gz
 
 BuildRequires:  bison
 BuildRequires:  flex
@@ -162,12 +165,8 @@ Obsoletes:      torque-xpbs <= 2.5.3
 
 
 %prep
+%git_get_source
 %setup -q
-%patch0 -p1 -b .old
-%patch1 -p1 -b .old
-%patch2 -p1 -b .old
-%patch3 -p1 -b .old
-
 
 
 %build
@@ -416,8 +415,6 @@ fi
 %{_mandir}/man8/pbs_server.8*
 
 
-
-
 %files -n %{schedname}
 %dir %{torquedir}/sched_priv
 %dir %{torquedir}/sched_priv/accounting
@@ -436,8 +433,6 @@ fi
 %{_mandir}/man8/pbs_sched*.8*
 
 
-
-
 %files -n %{momname}
 %doc
 %dir %{torquedir}/mom_priv
@@ -454,8 +449,6 @@ fi
 %{_mandir}/man8/pbs_mom.8*
 
 
-
-
 %files -n %{guiname}
 %{_bindir}/xpbs*
 %{_bindir}/pbs_wish
@@ -466,3 +459,4 @@ fi
 %{_libdir}/xpbsmon
 %{_mandir}/man1/xpbs*.1*
 
+%changelog -f %{_sourcedir}/%{name}-changelog.gitrpm.txt
