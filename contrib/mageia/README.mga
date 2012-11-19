@@ -1,0 +1,31 @@
+#Copy paste the following commands to get a minimal functionning queue
+#named "serial".
+
+
+#server attributes (by default scheduling is disabled)
+
+qmgr -c "set server scheduling = true"
+qmgr -c "set server query_other_jobs=true"
+qmgr -c "set server default_queue = serial"
+
+
+
+#create the queue named "serial", edit as needed
+
+qmgr -c "create queue serial queue_type=execution"
+qmgr -c "set queue serial started=true"
+qmgr -c "set queue serial enabled=true"
+
+qmgr -c "set queue serial max_user_run=2"
+qmgr -c "set queue serial max_user_queuable=4"
+qmgr -c "set queue serial max_running=8"
+
+qmgr -c "set queue serial priority=0" 
+qmgr -c "set queue serial resources_available.nodect=1"
+qmgr -c "set queue serial resources_available.vmem=4gb"
+qmgr -c "set queue serial resources_max.nodect=1"
+
+qmgr -c "set queue serial resources_max.walltime=144:00:00"
+qmgr -c "set queue serial resources_default.nodes=1"
+qmgr -c "set queue serial resources_default.walltime=600"
+
