@@ -40,17 +40,17 @@ BuildRequires:  libncurses-devel
 BuildRequires:  libreadline-devel
 BuildRequires:  tk-devel
 BuildRequires:  tcl-devel
-BuildRequires:  tclx-devel
+#BuildRequires:  tclx-devel
 BuildRequires:  openssh-clients
 BuildRequires:  readline-devel
 BuildRequires:  gcc-gfortran
 BuildRequires:  gcc-c++
-BuildRequires:  quadmath-devel
+# BuildRequires:  quadmath-devel
 BuildRequires:  pam-devel
 BuildRequires:  openssl-devel
 BuildRequires:  libxml2-devel
-BuildRequires:  hwloc
-BuildRequires:  hwloc-devel
+#BuildRequires:  hwloc
+#BuildRequires:  hwloc-devel
 
 Requires:       openssh-clients 
 Suggests:       torque-mom
@@ -217,7 +217,6 @@ export DONT_RELINK=1
 install -p -m 755 contrib/init.d/pbs_mom    %{buildroot}%{_initrddir}/pbs_mom
 install -p -m 755 contrib/init.d/pbs_sched  %{buildroot}%{_initrddir}/pbs_sched
 install -p -m 755 contrib/init.d/pbs_server %{buildroot}%{_initrddir}/pbs_server
-install -p -m 755 contrib/init.d/trqauthd %{buildroot}%{_initrddir}/trqauthd
 #end starting scripts
 
 
@@ -246,9 +245,7 @@ popd
 
 install -p -m 644 contrib/mageia/mom_config %{buildroot}%{_sysconfdir}/%{name}
 pushd %{buildroot}%{torquedir}/mom_priv
-%__ln_s %{_sysconfdir}/%{name}/mom_config config
-
-
+%__ln_s -f %{_sysconfdir}/%{name}/mom_config config
 popd
 #end config files
 
@@ -260,8 +257,8 @@ install -D -m 644 contrib/mageia/README.mga %{buildroot}%{_docdir}/%{name}/READM
 
 #make symbolic links for tcl
 pushd %{buildroot}%{_libdir}
-%__ln_s %{tcl_sitelib}/xpbs    .
-%__ln_s %{tcl_sitelib}/xpbsmon .
+%__ln_s -f %{tcl_sitelib}/xpbs    .
+%__ln_s -f %{tcl_sitelib}/xpbsmon .
 popd
 
 
@@ -320,8 +317,8 @@ fi
 
 
 %files
-%doc PBS_License.txt Release_Notes README.torque
-%doc README.NUMA README.trqauthd README.array_changes
+%doc PBS_License_2.5.txt Release_Notes README.torque
+%doc README.array_changes
 %dir %{torquedir}
 %dir %{torquedir}/checkpoint
 %dir %{torquedir}/aux
@@ -337,9 +334,8 @@ fi
 
 
 %files -n %{libname}
-%doc CHANGELOG README.coding_notes README.building_40 README.configure
+%doc CHANGELOG
 %{_libdir}/*.so.*
-
 
 
 %files -n %{devname}
@@ -357,11 +353,8 @@ fi
 %{_mandir}/man3/drmaa_*.3*
 
 
-
 %files -n %{clientname}
 %doc
-%{_initrddir}/trqauthd
-%{_sbindir}/trqauthd
 %{_bindir}/qa*
 %{_bindir}/qc*
 %{_bindir}/qdel
@@ -394,7 +387,7 @@ fi
 %{_mandir}/man7/pbs_*.7*
 %{_mandir}/man8/pbsnodes.8*
 %{_mandir}/man8/q*.8*
-
+%{_sbindir}/pbs_iff
 
 
 %files -n %{servername}
