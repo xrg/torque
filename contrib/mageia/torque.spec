@@ -23,8 +23,6 @@ License:        TORQUEv1.1
 URL:            http://www.clusterresources.com/products/torque-resource-manager.php
 
 Source0:        %{name}-%{version}.tar.gz
-Source1:        mom_config
-Source2:        README.mga
 
 
 # add LSB info + fixes various bugs in pbs_server
@@ -254,7 +252,7 @@ pushd %{buildroot}%{torquedir}/sched_priv
 %__ln_s               %{_sysconfdir}/%{name}/resource_group .
 popd
 
-install -p -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/%{name}
+install -p -m 644 contrib/mageia/mom_config %{buildroot}%{_sysconfdir}/%{name}
 pushd %{buildroot}%{torquedir}/mom_priv
 %__ln_s %{_sysconfdir}/%{name}/mom_config config
 
@@ -265,7 +263,7 @@ popd
 
 #move drmaa man to the right place
 %__mv %{buildroot}%{_defaultdocdir}/torque-drmaa/man/man3/* %{buildroot}%{_mandir}/man3/.
-install -D -m 644 %{SOURCE2} %{buildroot}%{_docdir}/%{name}/README.mga
+install -D -m 644 contrib/mageia/README.mga %{buildroot}%{_docdir}/%{name}/README.mga
 
 
 #make symbolic links for tcl
