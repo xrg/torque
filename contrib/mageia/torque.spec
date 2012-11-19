@@ -24,14 +24,6 @@ URL:            http://www.clusterresources.com/products/torque-resource-manager
 
 Source0:        %{name}-%{version}.tar.gz
 
-
-# add LSB info + fixes various bugs in pbs_server
-Patch0:         torque-4.1.1-initdserver.patch
-Patch1:         torque-4.1.1-initdsched.patch
-Patch2:         torque-4.1.1-initdmom.patch
-Patch3:         torque-4.1.1-initdtrqauthd.patch
-
-
 BuildRequires:  bison
 BuildRequires:  flex
 BuildRequires:  groff

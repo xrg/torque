@@ -2,8 +2,24 @@
 #
 # pbs_server	This script will start and stop the PBS Server
 #
-# chkconfig: 345 95 5
-# description: PBS is a versatile batch system for SMPs and clusters
+# chkconfig: 345 85 85
+# description: TORQUE/PBS is a versatile batch system for SMPs and clusters
+#
+# processname: pbs_server
+#
+### BEGIN INIT INFO
+# Provides: pbs_server
+# Required-Start: $network
+# Required-Stop: $network
+# Default-Start: 3 4 5
+# Short-Description: The Torque server
+# Description: The Tera-scale Open-source Resource and QUEue manager
+#              provides control over batch jobs and distributed
+#              computing resources. It is an advanced open-source
+#              product based on the original PBS project and
+#              incorporates the best of both community and
+#              professional development.
+### END INIT INFO
 #
 # Source the library functions
 . /etc/rc.d/init.d/functions
@@ -15,12 +31,17 @@ create() {
         exit 1
     fi
 
-    $PBS_DAEMON -d $PBS_HOME -t create &
+    $PBS_DAEMON -d $PBS_HOME -f -t create &
     while [ ! -r $PBS_SERVERDB ]; do
         sleep 1
+        killproc pbs_server
     done
-    killproc pbs_server
     RET=$?
+
+    if [ -f /etc/torque/nodes ]; then
+	ln -s /etc/torque/nodes $PBS_HOME/server_priv/nodes
+    fi
+
 }
 
 start() {
