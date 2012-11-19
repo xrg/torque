@@ -1,0 +1,312 @@
+				                       Release Notes
+
+TORQUE Resource Manager
+
+Software Version 2.5.0
+
+This file contains a few notes on building and installing TORQUE and 
+Release notes concerning some of the new features of this release.
+
+		                   	-------- WARNING! --------
+
+TORQUE 2.5 Array Changes - WARNING: TORQUE 2.5 Job Arrays are not backwards
+compatible, you MUST NOT upgrade to this from 2.3 or 2.4 while you have job
+arrays queued - See README.array_changes for more details.
+
+---------------------------------------------------------------------------
+CONTENTS
+
+   This document contains the following sections:
+     
+     * Overview
+     * What's New
+     * Requirements
+     * Installation
+
+--------------------------------------------------------------------------
+OVERVIEW
+
+    Enhanced job array functionality and Cygwin compatibility are the two
+    main new features of TORQUE 2.5.0. Several other minor enhancements 
+    have also been added to TORQUE 2.5.0 along with several bug fixes.
+    For a complete list of changes see CHANGELOG.
+    
+---------------------------------------------------------------------------
+WHAT'S NEW
+
+New in 2.5.12
+    Enabled MOMs to change a users group on stderr/stdout files. This fixes
+    a problem where files owned by the user but not its group caused a job
+    to fail.
+
+    Fixed a large memory leak on the mom when configured with --enable-nvidia-gpus.
+
+    A buffer overflow problem was fixed in tcp_puts which at times made
+    it so not enough memory would be allocated for outbound data. This
+    may account for some segfaults and memory corruption problems.
+
+    add the mom config option exec_with_exec. When set to true, the pbs_mom will exec
+    the job script instead of piping it to stdin. This makes signal trapping easier
+    because the shell doesn't have to be configured to trap the signal as well.
+
+
+    For all bugs fixed in 2.5.12 please see the CHANGELOG.
+
+New in 2.5.11 and 2.5.10 
+    In 2.5.9 a change was made to the internal job structure of TORQUE
+    which made upgrading to 2.5.9 with job arrays not possible. If you
+    are upgrading from 2.5.9 to 2.5.11 and have job arrays be sure to
+    start pbs_server the first time with the -u option. This will convert
+    the 2.5.9 jobs format to the correct format. The -u option only needs
+    to be run once.
+
+    The moab_array_compatible server parameter has been changed to be 
+    TRUE by default. This affects job arrays submitted with job limits.
+    This not only affects Moab users but also Maui users.
+    
+    For a complete list of changes please see the CHANGELOG.
+
+New in 2.5.9
+    There were several bug fixes to TORQUE 2.5.9. Following are a list of 
+    noteable bug fixes.
+
+        Added function DIS_tcp_close which frees buffer memory used for sending
+        and receiving tcp data. This reduces the running memory size of TORQUE. 
+    
+        Fix for a server seg-fault when using the record_job_info. 
+
+        Fix for afteranyarray and afterokarry where dependent jobs would not
+        run after the dependent array requirements were satisfied.
+
+        Fix to delete .AR array files from the $TORQUE_HOME/server_priv/arrays 
+        directory.
+
+        Fix to recover previous state of job arrays between restarts of pbs_server
+
+        Fix to prevent the server from hanging when moving jobs from one server to
+        another server
+
+        Fix to stop a segfault if using munge and the munge daemon was not running
+
+        Security fix to munge authorization to prevent users from gaining access
+        to TORQUE when munge was not running.
+
+        Fix to allow pam_pbssimpleauth to work properly.
+
+    A new torque.cfg option as added named TRQ_IFNAME. This option allows the 
+    administrator to select the outbound tcp interface by interface name for qsub
+    commands.
+
+    To see a compelete list of changes please see the CHANGELOG.
+
+
+New in 2.5.8
+    There were no new features added to 2.5.8. Notable bug fixes included a fix
+    for the queue resource procct where the procct value would be passed to
+    the scheduler if a job was placed in a routing queue. This would make the
+    value of procct show up as a generic resource in Moab and Maui and the job
+    could not be scheduled.
+    
+    There is a known compiler problem if TORQUE is configured with --enable-unixsockets
+    and --enable-gcc-warnings. In the module src/server/process_request.c the following 
+    message will be generated: 
+
+    cc1: warnings being treated as errors
+    process_request.c: In function ‘get_creds’:
+    process_request.c:288:3: error: dereferencing type-punned pointer will break 
+    strict-aliasing rules
+    make[2]: *** [process_request.o] Error 1
+   
+
+    For a complete list of changes see the CHANGELOG.
+
+New in 2.5.6
+    The most visible new feature added in 2.5.6 was the auto detection of GPUs 
+    when using the NVIDIA GPU devices. Also added is the ablility to report
+    statistics about NVIDIA GPUs. Statistics are returned in the pbsnodes
+    output.
+
+    job_starter is a new MOM configuration parameter. This directs the MOM to
+    run a user specified script or binary. For more information see $job_starter
+    at http://www.adaptivecomputing.com/resources/docs/torque/a.cmomconfig.php.
+
+    rpp_throttle is a new MOM configuration parameter. This allows the administrator
+    to set a limit to how fast rpp packets (mostly mom to mom communication) are 
+    put on the network. rpp uses UDP so this helps prevent large jobs with 
+    large amounts of data from getting lost due to network conjestion. see
+    $rpp_throttle at http://www.adaptivecomputing.com/resources/docs/torque/a.cmomconfig.php.
+
+    Added a new queue resource called procct which allows an administrator
+    to limit jobs allowed in a queue based on the number of processes 
+    requested in the job. 
+
+    For other bugfixes and features added to TORQUE 2.5.6 please see the CHANGELOG.
+
+New in 2.5.5
+    Corrected the license file. With TORQUE 2.5.0 Adaptive Computing in good faith
+    updated the license file to reflect that TORQUE is currently administered by
+    Adaptive Computing. It also tried to remove the expired portions of the license
+    to make it easier to understand. While it was working to update the file it 
+    inadvertently left in provision (2) from the OpenPBS v2.3 Software license 
+    without the accompanying statement which explains that the provision expired on 
+    December 31, 2001. This was an oversight on the part of Adaptive Computing.
+    Adaptive Computing does not have the authority nor the desire to change
+    the terms of the licensing. The updated licence file has been changed to 
+    PBS_License_2.5.txt and is found in the root of the source. A copy of the 
+    license file from version 2.4.x and earlier is available in the contrib 
+    directory under PBS_License_2.3.txt.
+    
+    The script contrib/init.d/pbs_server was changed to be able to create the
+    TORQUE serverdb file if it does not already exist.
+
+    Modified qsub to use the torque.cfg directive VALIDATEGROUPS and verify
+    that users who submit jobs using a -W group_list directive are part of
+    the group on the submit host. This helps plug a security hole when 
+    disable_server_id_check is set to TRUE.
+
+    For all other bug fixes please see the CHANGELOG for the 2.5.5 build.
+
+
+New in 2.5.4
+    Generic GPGPU support has been added to TORQUE 2.5.4. Users are able to
+    manually set the number of GPUs on a system in the $TORQUE_HOME/server_priv/nodes
+    file. GPUs are then requested on job submission as part of the nodes resource
+    list using the following syntax:  -l nodes=X[:ppn=Y][:gpus=Z]. The allocated
+    gpus appear in $PBS_GPUFILE, a new environment variable, in the 
+    form: <hostname>-gpu<index> and in a  new job attribute exec_gpus:
+    <hostname>-gpu/<index>[+<hostname>-gpu/<index>...]. For more information
+    about using GPUs with TORQUE 2.5.4 see the documentation in section 1.5.3 at 
+    http://www.clusterresources.com/products/torque/docs/1.5nodeconfig.shtml
+    and also section 2.1.2 at 
+    http://www.clusterresources.com/products/torque/docs/2.1jobsubmission.shtml#resources
+
+    The buildutils/torque.spec.in file has been modified to comply more closely with RPM
+    standards. Users may experience some unexpected behavior from what they have experienced
+    in past versions of TORQUE. Please post your questions, problems and concerns to
+    the mailing list at torqueuers@supercluster.org
+
+    While Adaptive Computing distributes the RPM files as part of the build it does not support 
+    those files. Not every Linux distribution uses RPM. Adaptive Computing provides a single
+    solution using make and make install that works across all Linux distributions and most
+    UNIX systems. We recognize the RPM format provides many advantages for deployment but 
+    it is up to the indiviual site to repackage the TORQUE installation to match their individual
+    needs.
+
+    If you have issues with the new spec files please post the issue or questions to the torque users
+    (torqueusers@supercluster.org) mailing list
+
+
+New in 2.5.3
+    Completed job information can now be logged. A new Boolean server parameter 
+    record_job_info can be set to TRUE and a log file will be created
+    under $TORQUE_HOME/job_logs. The log file is in XML format and 
+    contains the same information that would be produced by qstat -f.
+    For more information about how to setup and use job logs go to
+    http://www.clusterresources.com/products/torque/docs/10.1joblogging.shtml
+    
+
+    The serverdb file which contains the queue and server configuration
+    data can optionally be converted to XML format. If you configure 
+    TORQUE with the --enable-server-xml option the serverdb file will
+    be stored in XML format. If you are upgrading from a version of 
+    TORQUE earlier than 2.5.3 the old serverdb file will be converted 
+    to the new XML format.
+    
+    WARNING -- If you wish to upgrade to the XML serverdb format please
+    backup the serverdb before doing the upgrade. This is a one-way upgrade.
+    Once the file has been converted to XML it cannot be converted back
+    to the binary format.
+
+    Munge has been added as an option for user authorization on the server.
+    The default user authorization for TORQUE uses privileged ports and 
+    ruserok to authorize client applications. Munge creates an alternative 
+    which is more scalable and can bypass the rsh type ruserok function
+    call. For more information see 1.3.2.8 Using MUNGE Authentication at
+    http://www.clusterresources.com/products/torque/docs/1.3advconfig.shtml
+
+New in verions 2.5.2 and earlier 2.5.x versions.
+
+    Job arrays are now suported in the commands qalter, qdel, qhold, qrls 
+    in addition to the qsub command.
+
+    Slot limits are a new feature added to job arrays which allow users and
+    administrators to have more control of the number of concurrently 
+    running jobs from a job array. Slot limits can be set on a per job basis
+    or system wide with the new server parameter 'max_slot_limit'. 
+    Administrators can also control how large user arrays can be with
+    the new server parameter 'max_job_array_size'.
+
+    New job dependecy options have been added to work with job arrays. Users
+    can create dependecies based on the status of entire job arrays and
+    not just individual jobs.
+
+    qstat has also been updated to more conveniently display job array. Job
+    arrays are displayed in a summary of the array by default, however,
+    expanded display of the entire job can also be done.
+
+    Special thanks to Glen Beane and David Beer for their work on the 
+    new job array functionality. For more information concerning updates 
+    to job arrays in TORQUE 2.5.0 refer to the README.array_changes document.
+
+    TORQUE 2.5.0 can now be run with Cygwin. This feature was added by
+    Igor Ilyenko, Yauheni Charniauski and Vikentsi Lapa. To learn how to 
+    run TORQUE with Cygwin see README.cygwin. TORQUE on Cygwin was a
+    community project and support for this feature will be provided by
+    the TORQUE community. 
+    
+    For more information concerning the installation and use of TORQUE
+    with Cygwin please see the README.cygwin file.
+
+    The 'procs' keyword has been part of the qsub syntax for some time. 
+    However, TORQUE itself never interpreted this argument and simply 
+    passed it through to the scheduler. With TORQUE 2.5.0 the 'procs' 
+    keyword is now interpreted to mean allocate a designated number of 
+    processors on any combination of nodes. For example the following
+    qsub command
+
+    qsub -l nodes=2 -l procs=2 
+
+    will allocate two separate nodes with one processor each plus it will
+    allocate two additional processors from any other available nodes.
+    The same allocation can be achieved with the following syntax as well.
+
+    qsub -l nodes=2+procs=2.
+
+    A new MOM config option was added named 'alias_server_name'. This option
+    allows a MOM to add an additional host name address to its trusted 
+    addresses. The option was added to overcome a problem with RPP and UDP
+    when alias IP addresses are used on a pbs_server.
+
+    'clone_batch_size', 'clone_batch_delay', 'job_start_timeout', and 
+    'checkpoint_defaults' were added as new qmgr server parameters. 
+
+    To find more information concerning the new parameters as well as other
+    TORQUE features see the documentation at 
+    http://www.clusterresources.com/products/torque/docs/
+
+
+
+
+REQUIREMENTS
+------------
+
+An ANSI C compiler is required.   The native C compiler is recommended if it
+is ANSI, otherwise use gcc.
+
+A fully POSIX make is required.  If you are unable to "make" PBS with your
+make, we suggest use of gmake from GNU.
+
+Tcl/Tk version 8 or higher is required if you plan to build the GUI portion
+of TORQUE or use a Tcl based scheduler.
+
+
+BUILD AND INSTALLATION DIRECTIONS
+---------------------------------
+
+The directions to build and install are found in the PBS Administrators Guide.
+A postscript and PDF copy are found in this directory.  Please read and
+follow the directions CAREFULLY.
+
+Installation instructions can also be found at http://www.clusterresources.com/products/torque/docs/
+
+
