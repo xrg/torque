@@ -924,8 +924,7 @@ char *argv[];
 
   if (argc != 2)
     {
-    sprintf(interp->result,
-            "%s: wrong # args: job_id", argv[0]);
+    Tcl_AppendResult(interp, argv[0], ": wrong # args: job_id");
     return TCL_ERROR;
     }
 
@@ -936,11 +935,11 @@ char *argv[];
     return TCL_OK;
     }
 
-  interp->result = "0";
+  Tcl_ResetResult(interp);
 
   if (pbs_rerunjob(connector, argv[1], extend))
     {
-    interp->result = "-1";
+    Tcl_SetObjResult(interp, Tcl_NewIntObj(-1));
     msg = pbs_geterrmsg(connector);
     sprintf(log_buffer, "%s (%d)", msg ? msg : fail, pbs_errno);
     log_err(-1, argv[0], log_buffer);
