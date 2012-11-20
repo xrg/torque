@@ -213,9 +213,9 @@ export DONT_RELINK=1
 
 #install starting scripts
 %__mkdir_p %{buildroot}%{_initrddir}
-install -p -m 755 contrib/init.d/pbs_mom    %{buildroot}%{_initrddir}/pbs_mom
-install -p -m 755 contrib/init.d/pbs_sched  %{buildroot}%{_initrddir}/pbs_sched
-install -p -m 755 contrib/init.d/pbs_server %{buildroot}%{_initrddir}/pbs_server
+install -p -m 755 contrib/init.d/mageia.pbs_mom    %{buildroot}%{_initrddir}/pbs_mom
+install -p -m 755 contrib/init.d/mageia.pbs_sched  %{buildroot}%{_initrddir}/pbs_sched
+install -p -m 755 contrib/init.d/mageia.pbs_server %{buildroot}%{_initrddir}/pbs_server
 #end starting scripts
 
 
