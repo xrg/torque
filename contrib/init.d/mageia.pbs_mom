@@ -104,6 +104,15 @@ case "$1" in
 		RET=$?
 		;;
 	restart)
+                if momctl -q jobs | grep -F "'jobs= '" > /dev/null ; then
+                    $0 stop
+                    sleep 1
+                    $0 start
+                else
+                    echo "You cannot restart pbs_mom because jobs are running. Please use \"$0 force-restart\""
+                fi
+                ;;
+        force-restart)
 		$0 stop
 		sleep 1
 		$0 start
