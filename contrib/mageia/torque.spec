@@ -185,17 +185,13 @@ Obsoletes:      torque-xpbs <= 2.5.3
                 --enable-high-availability \
                 --enable-syslog \
                 --enable-gui \
+                --enable-numa-support \
+                --enable-cpuset \
                 --disable-static
-#                --enable-numa-support \
-#                --enable-cpuset \
 
 %make all \
                 XPBS_DIR=%{tcl_sitelib}/xpbs \
                 XPBSMON_DIR=%{tcl_sitelib}/xpbsmon
-
-
-
-
 
 
 %install
