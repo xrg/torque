@@ -789,15 +789,14 @@ sub show_grid {
         
                 #return if $y >= $Y;
             }
-            clrtoeol($pad);
-            move( $pad, ++$y, $x = 0 ) if $col != $columns;
-            printdashline( $maxlen, $headerspaces, $columns );
+
             clrtoeol($pad);
             move( $pad, ++$y, $x = 0 );
         }
+        printnumberline ( $maxlen, 1, $columns );
         foreach my $node (@ts) {
             my $headerspaces=1;
-            printnumberline ( $maxlen, $headerspaces, $columns );
+
             printdashline( $maxlen, $headerspaces, $columns );
         
             my $col  = 0;
@@ -830,9 +829,6 @@ sub show_grid {
                 clrtoeol($pad);
                 move( $pad, ++$y, $x = 0 ) if $col >= $columns;
             }
-            clrtoeol($pad);
-            move( $pad, ++$y, $x = 0 ) if $col != $columns;
-            printdashline( $maxlen, 1, $columns );
             clrtoeol($pad);
             move( $pad, ++$y, $x = 0 );
         }
