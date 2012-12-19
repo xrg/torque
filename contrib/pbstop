@@ -829,6 +829,9 @@ sub show_grid {
                 clrtoeol($pad);
                 move( $pad, ++$y, $x = 0 ) if $col >= $columns;
             }
+
+            addstr $pad, "   $$allnodes{$server}{$node}{status}{loadave}" 
+                    if exists $allnodes->{$server}{$node}{status}{loadave};
             clrtoeol($pad);
             move( $pad, ++$y, $x = 0 );
         }
