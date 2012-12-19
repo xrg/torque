@@ -23,7 +23,7 @@
 # configurable defaults
 # Don't change the defaults here, instead make yourself a config file, see pbstop(1)
 my $columns      	= 30;      # columns in grid
-my $sleeptime    	= 20;      # seconds between refreshes
+my $sleeptime    	= 10;      # seconds between refreshes
 my $colorize     	= 1;       # 1 or 0
 my $show_summary 	= 1;       # 1 or 0
 my $compact_summary	= 0;       # 1 or 0
@@ -36,7 +36,7 @@ my @show_cpu     	= ("0");   # list of cpu numbers
 my @host                = ();      # leave empty for localhost
 my $maxrows         	= 300;     # maximum number of rows
 my $maxcolumns         	= 200;     # maximum number of columns
-my $maxnodegrid		= 7;	   # maximum number of CPUs on a node before it gets
+my $maxnodegrid		= 1;	   # maximum number of CPUs on a node before it gets
 				   # its own grid.
 
 my $qmgr                = "/usr/local/pbs/bin/qmgr";
