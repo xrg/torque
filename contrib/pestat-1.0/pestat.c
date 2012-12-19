@@ -27,6 +27,7 @@ Fax: +61 2 6279 8199             Canberra, ACT, 0200, Australia
 #define OFFLINE 3
 #define RESET   4
 #define ALL     5
+#define TRUE    1
 
 /* node-attribute values (state,ntype) */
 
@@ -40,6 +41,7 @@ Fax: +61 2 6279 8199             Canberra, ACT, 0200, Australia
 #define ND_timeshared           "time-shared"
 #define ND_cluster              "cluster"
 
+static int DEBUG = 0;
 struct state_map
   {
   char *rname;
