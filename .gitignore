@@ -1,0 +1,7 @@
+.deps
+/torque.spec
+/Makefile
+/config.log
+/config.status
+/libtool
+/pbs-config
