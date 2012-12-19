@@ -256,9 +256,9 @@ int main(
   sort_stats(&bstatus);    /* Sort the nodes into name order for readability */
 
 #ifdef TRU64
-  printf("  node state  load    pmem ncpu frmem ubcmem usrs jobs   jobids\n");
+  printf("        node state  load    pmem ncpu frmem ubcmem usrs jobs   jobids\n");
 #else
-  printf("  node state  load    pmem ncpu   mem   resi usrs jobs   jobids\n");
+  printf("        node state  load    pmem ncpu   mem   resi usrs jobs   jobids\n");
 #endif
 
   for (pbstat = bstatus; pbstat; pbstat = pbstat->next)
@@ -273,7 +273,7 @@ int main(
       }
 
     if (strstr(node_state, ND_down))
-      printf("%6s  down\n", pbstat->name);
+      printf("%12s  down\n", pbstat->name);
     else
       {
       int mom_sd;
@@ -282,7 +282,7 @@ int main(
       char *endp;                   /* used with strtol() */
       double loadave;
 
-      printf("%6s ", pbstat->name);
+      printf("%12s ", pbstat->name);
 
       for (sm = pstate; sm->rname; sm++)
         {
