@@ -1,3 +1,5 @@
 /blcr/Makefile
 /pestat-1.0/pestat
 /pestat-1.0/pestat.o
+/blcr/checkpoint_script
+/blcr/restart_script

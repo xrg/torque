@@ -5,3 +5,9 @@
 /config.status
 /libtool
 /pbs-config
+/doc/man1/*.1
+/doc/man3/*.3
+/doc/man7/*.7
+/doc/man8/*.8
+/doc/soelim
+/doc/soelim.o
