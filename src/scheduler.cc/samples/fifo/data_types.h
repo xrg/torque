@@ -363,7 +363,7 @@ struct group_info
 
 struct group_node_usage
   {
-  char name[9];
+  char name[PBS_MAXUSER+1];
   usage_t usage;
   };
 

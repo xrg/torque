@@ -640,7 +640,8 @@ void rec_write_usage(group_info *root, FILE *fp)
 
   if (root -> usage != 1)   /* usage defaults to 1 */
     {
-    strcpy(grp.name, root -> name);
+    strncpy(grp.name, root -> name, PBS_MAXUSER);
+    grp.name[PBS_MAXUSER] = '\0';
     grp.usage = root -> usage;
 
     if (!fwrite(&grp, sizeof(struct group_node_usage), 1, fp))
