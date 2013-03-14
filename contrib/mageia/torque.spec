@@ -400,6 +400,7 @@ fi
 %dir %{torquedir}/server_priv/queues
 %config(noreplace) %{_sysconfdir}/%{name}/nodes
 %{torquedir}/server_priv/nodes
+%dir %{torquedir}/server_logs
 %{_initrddir}/pbs_server
 %{_sbindir}/pbs_server
 %{_sbindir}/qserverd
