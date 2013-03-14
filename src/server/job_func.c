@@ -774,15 +774,17 @@ job *job_clone(
   hostname = index(oldid, '.');
 
   *bracket = '\0';
-  hostname++;
 
-  pnewjob->ji_qs.ji_jobid[PBS_MAXSVRJOBID-1] = '\0';
-
-  snprintf(pnewjob->ji_qs.ji_jobid, PBS_MAXSVRJOBID, "%s[%d].%s",
-           oldid,
-           taskid,
-           hostname);
-
+  if (hostname != NULL)
+    {
+    hostname++;
+    
+    snprintf(pnewjob->ji_qs.ji_jobid, sizeof(pnewjob->ji_qs.ji_jobid), "%s[%d].%s",
+      oldid, taskid, hostname);
+    }
+  else
+    snprintf(pnewjob->ji_qs.ji_jobid, sizeof(pnewjob->ji_qs.ji_jobid), "%s[%d]",
+      oldid, taskid);
 
   /* update the job filename
    * We could optimize the sub-jobs to all use the same file. We would need a
@@ -794,7 +796,11 @@ job *job_clone(
    * make up new job file name, it is based on the new jobid
    */
 
-  snprintf(basename, PBS_JOBBASE, "%s-%d.%s", oldid, taskid, hostname);
+  if (hostname != NULL)
+    snprintf(basename, sizeof(basename), "%s-%d.%s", oldid, taskid, hostname);
+  else
+    snprintf(basename, sizeof(basename), "%s-%d", oldid, taskid);
+
   free(oldid);
 
   do
@@ -1064,6 +1070,10 @@ void job_clone_wt(
   if (rn != NULL)
     {
     new_task = set_task(WORK_Timed, time_now + clone_delay, job_clone_wt, ptask->wt_parm1);
+    if (new_task == NULL)
+      {
+      log_err(-1, id, "new_task not created");
+      }
     }
   else
     {

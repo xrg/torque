@@ -1,5 +1,22 @@
 c - crash     b - bug fix    e - enhancement    f - new feature  n - note
 
+2.5.13
+  e - Added RPM support for nvidia_gpus to torque.spec.in file. Submitted by  Lloyd Brown
+        Fulton supercomputing Lab, BYU.
+  b - Fixed a memory leak with --enable-nvidia-gpus option. pbs_server was leaking memory 
+      after each  update from the MOMs getting gpu information. Bugzilla 205 and TRQ-1090.
+  b - If interrupted when reading the terminal type for an interactive job continue 
+      trying to read instead of giving up. TRQ-1091.
+  b - Backported revision 6750 from 3.0-fixes to fix TRQ-1137. This fixed a problem where all 
+      jobs get deleted if Moab is configured with SYNCJOBID=TRUE and ROOTPROXYJOBSUBMISSION 
+      set in the RMCFG flags.
+  b - Fixed potential NULL pointer dereferences in insert_link, parse_equal_string and
+      MXMLSetChild.
+  b - Don't leave quotes on any arguments passed to the resource list. TRQ-1209.
+  b - backported fix for TRQ-1088 from 4.1-fixes. max_user_queuable value is ignored. 
+  c - Setting display_job_server_suffix=false crashed with job arrays. Fixed. bugzilla #216
+      Backported from 4.1.3.
+
 2.5.12
   b - Fix so child pbs_mom does not remain running after qdel on slow starting job.
       TRQ-860. (backported from 4.0.1)
@@ -20,7 +37,6 @@ c - crash     b - bug fix    e - enhancement    f - new feature  n - note
   e - add the mom config option exec_with_exec. When set to true, the pbs_mom will exec 
       the job script instead of piping it to stdin. This makes signal trapping easier 
       because the shell doesn't have to be configured to trap the signal as well.
-     
 
 2.5.11
   b - fix for writing too much data when job_script is saved to job log. (backported from 3.0.5)

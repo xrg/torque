@@ -916,7 +916,7 @@ resource *get_resource(
  * does not make use of comp_resc_eq or comp_resc_nc
  */
 
-static void chk_svr_resc_limit(
+static int chk_svr_resc_limit(
 
   attribute *jobatr, /* I */
   pbs_queue *pque,   /* I */
@@ -1282,6 +1282,20 @@ static void chk_svr_resc_limit(
       {
       /* how many processors does this spec want */
       req_procs += procs_requested(jbrc_nodes->rs_value.at_val.at_str);
+      if (req_procs < 0)
+        {
+        if (req_procs == -2)
+          {
+          if ((EMsg != NULL) && (EMsg[0] == '\0'))
+            strcpy(EMsg, "Memory allocation failed");
+          }
+        else
+          {
+          if ((EMsg != NULL) && (EMsg[0] == '\0'))
+            strcpy(EMsg, "Invalid Syntax");
+          }
+        return(PBSE_INVALID_SYNTAX);
+        }
 
       if (node_avail_complex(
             jbrc_nodes->rs_value.at_val.at_str,
@@ -1350,7 +1364,7 @@ static void chk_svr_resc_limit(
       }
     }
 
-  return;
+  return(PBSE_NONE);
   }  /* END chk_svr_resc_limit() */
 
 
@@ -1456,6 +1470,7 @@ int chk_resc_limits(
   char      *EMsg)   /* O (optional,minsize=1024) */
 
   {
+  int rc;
   /* NOTE:  comp_resc_gt and comp_resc_lt are global ints */
 
   if (EMsg != NULL)
@@ -1478,11 +1493,14 @@ int chk_resc_limits(
 
   /* now check against queue or server maximum */
 
-  chk_svr_resc_limit(
+  rc = chk_svr_resc_limit(
     pattr,
     pque,
     pque->qu_qs.qu_type,
     EMsg);
+
+  if (rc != PBSE_NONE)
+    return(rc);
 
   if (comp_resc_lt > 0)
     {
@@ -1494,7 +1512,7 @@ int chk_resc_limits(
 
   /* SUCCESS */
 
-  return(0);
+  return(PBSE_NONE);
   }  /* END chk_resc_limits() */
 
 
@@ -1525,7 +1543,8 @@ int svr_chkque(
   int i;
   int failed_group_acl = 0;
   int failed_user_acl  = 0;
-  int user_jobs;
+  int user_jobs = 0;
+  int total_jobs = 0;
 
   struct array_strings *pas;
   int j = 0;
@@ -1833,17 +1852,21 @@ int svr_chkque(
       return(PBSE_QUNOENB);
       }
 
-    if ((pque->qu_attr[QA_ATR_MaxJobs].at_flags & ATR_VFLAG_SET) &&
-        ((count_queued_jobs(pque,NULL) + array_jobs) >= pque->qu_attr[QA_ATR_MaxJobs].at_val.at_long))
+    if ((pque->qu_attr[QA_ATR_MaxJobs].at_flags & ATR_VFLAG_SET))
       {
-      if (EMsg)
-        snprintf(EMsg, 1024,
-          "total number of jobs in queue exceeds the queue limit: "
-          "user %s, queue %s",
-          pjob->ji_wattr[JOB_ATR_job_owner].at_val.at_str,
-          pque->qu_qs.qu_name);
+      total_jobs = count_queued_jobs(pque,NULL);
+      if ((total_jobs + array_jobs) >= pque->qu_attr[QA_ATR_MaxJobs].at_val.at_long)
+        {
 
-      return(PBSE_MAXQUED);
+        if (EMsg)
+          snprintf(EMsg, 1024,
+            "total number of jobs in queue exceeds the queue limit: "
+            "user %s, queue %s",
+            pjob->ji_wattr[JOB_ATR_job_owner].at_val.at_str,
+            pque->qu_qs.qu_name);
+
+        return(PBSE_MAXQUED);
+        }
       }
 
     if ((pque->qu_attr[QA_ATR_MaxUserJobs].at_flags & ATR_VFLAG_SET) &&
@@ -1854,7 +1877,7 @@ int svr_chkque(
       user_jobs = count_queued_jobs(pque,
           pjob->ji_wattr[JOB_ATR_job_owner].at_val.at_str);
 
-      if (user_jobs + array_jobs >= pque->qu_attr[QA_ATR_MaxUserJobs].at_val.at_long)
+      if (user_jobs >= pque->qu_attr[QA_ATR_MaxUserJobs].at_val.at_long)
         {
         if (EMsg)
           snprintf(EMsg, 1024,
@@ -1865,6 +1888,7 @@ int svr_chkque(
 
         return(PBSE_MAXUSERQUED);
         }
+
       }
 
     /* 3. if "from_route_only" is true, only local route allowed */

@@ -454,6 +454,7 @@ int pbsd_init(
   char *psuffix;
   int  rc;
   int Index;
+  char *tmp_ptr;
 
   struct stat statbuf;
   char *suffix_slash = "/";
@@ -461,8 +462,6 @@ int pbsd_init(
   struct sigaction act;
 
   struct sigaction oact;
-
-
   struct work_task *wt;
   job_array *pa;
 
@@ -1167,6 +1166,9 @@ int pbsd_init(
             exit(-1);
 
             }
+          strcpy(pjob->ji_jobid_filename, pdirent->d_name);
+          tmp_ptr = strstr(pjob->ji_jobid_filename, JOB_FILE_SUFFIX);
+          *tmp_ptr = 0;
           }
         else
           {
@@ -1218,7 +1220,7 @@ int pbsd_init(
           (!(pjob->ji_wattr[(int)JOB_ATR_job_array_request].at_flags & ATR_VFLAG_SET)) &&
           (pjob->ji_qs.ji_svrflags & JOB_SVFLG_SCRIPT))
         {
-        strcpy(basen, pjob->ji_qs.ji_jobid);
+        strcpy(basen, pjob->ji_jobid_filename);
 
         strcat(basen, JOB_SCRIPT_SUFFIX);
 
@@ -1323,9 +1325,12 @@ int pbsd_init(
            we might need to validate that the last job was fully initialized
            before continuing the cloning process. */
         wt = set_task(WORK_Timed, time_now + 1, job_clone_wt, (void*)pa->template_job);
-
+        if (wt == NULL)
+          {
+          sprintf(log_buffer, "could not set task");
+          log_err(-1, id, log_buffer);
+          }
         }
-
       }
     else if (pa->ai_qs.jobs_done == pa->ai_qs.num_jobs && pa->template_job == NULL)
       {
